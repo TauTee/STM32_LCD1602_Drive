@@ -584,16 +584,6 @@
               <FileType>1</FileType>
               <FilePath>..\HardWare\LCD.c</FilePath>
             </File>
-            <File>
-              <FileName>delay.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\HardWare\delay.c</FilePath>
-            </File>
-            <File>
-              <FileName>sys.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\HardWare\sys.c</FilePath>
-            </File>
           </Files>
         </Group>
       </Groups>

@@ -1,0 +1,26 @@
+#include "stm32f10x_usart.h"
+
+static int uart_init(void)
+{
+    USART_InitTypeDef usart1;
+    GPIO_InitTypeDef  pa;
+    
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART1, ENABLE);
+    
+    pa.GPIO_Pin   = GPIO_Pin_9|GPIO_Pin_10;
+	pa.GPIO_Mode  = GPIO_Mode_AF_PP;
+	pa.GPIO_Speed = GPIO_Speed_50MHz;
+	GPIO_Init(GPIOA, &pa);
+    
+    usart1.USART_BaudRate            = 115200;
+    usart1.USART_WordLength          = USART_WordLength_8b;
+    usart1.USART_StopBits            = USART_StopBits_1;
+    usart1.USART_Parity              = USART_Parity_No;
+    usart1.USART_Mode                = USART_Mode_Rx|USART_Mode_Tx;
+    usart1.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
+    USART_Init(USART1, usart1);
+}
+
+INIT_BOARD_EXPORT(uart_init);
+

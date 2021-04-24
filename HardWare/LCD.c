@@ -1,77 +1,154 @@
 #include "LCD1602.h"
 #include "stm32f10x_rcc.h"
+#include <rtthread.h>
 
-void delay_us(unsigned int us){
-	unsigned int  i;
-	
-	do{
-		i = 10;
-		while(i--) __nop();
-	} while (--us);
+//void delay_us(unsigned int us){
+//	unsigned int  i;
+//	
+//	do{
+//		i = 10;
+//		while(i--) __nop();
+//	} while (--us);
 
-}
+//}
 /***********************************GPIO³õÊ¼»¯********************************************/
 void GPIO_INIT(void){		//GPIO³õÊ¼»¯
 	GPIO_InitTypeDef PB;
 	GPIO_InitTypeDef PA;
+    GPIO_InitTypeDef PC;
 	
 	GPIO_PinRemapConfig(GPIO_Remap_SWJ_JTAGDisable, ENABLE);	//½ûÓÃjtag£¬²»È»Ð´Èë³ÌÐòºÍ³ÌÐòÖ´ÐÐ¶¼»áÊÜÓ°Ïì
 	RCC_APB2PeriphClockCmd( RCC_APB2Periph_GPIOA, ENABLE );
 	RCC_APB2PeriphClockCmd( RCC_APB2Periph_GPIOB, ENABLE );		//´ò¿ªGPIOA~C
 	RCC_APB2PeriphClockCmd( RCC_APB2Periph_GPIOC, ENABLE );
 	
-	PB.GPIO_Pin = EN|RW|RS;
-	PB.GPIO_Mode = GPIO_Mode_Out_PP;
-	PB.GPIO_Speed = GPIO_Speed_50MHz;
-	GPIO_Init(GPIOB, &PB);
+	PA.GPIO_Pin   = EN|RW|RS;
+	PA.GPIO_Mode  = GPIO_Mode_Out_PP;
+	PA.GPIO_Speed = GPIO_Speed_50MHz;
+	GPIO_Init(GPIOA, &PA);
 	
-	PA.GPIO_Pin = GPIO_Pin_0|GPIO_Pin_1|GPIO_Pin_2|
-				  GPIO_Pin_3|GPIO_Pin_4|GPIO_Pin_5|
-				  GPIO_Pin_6|GPIO_Pin_7;
+    PA.GPIO_Pin = GPIO_Pin_7|GPIO_Pin_1;
 	PA.GPIO_Mode = GPIO_Mode_Out_PP;
 	PA.GPIO_Speed = GPIO_Speed_50MHz;
 	GPIO_Init(GPIOA, &PA);
+    
+    PB.GPIO_Pin = GPIO_Pin_1|GPIO_Pin_11|GPIO_Pin_0|GPIO_Pin_10;
+	PB.GPIO_Mode = GPIO_Mode_Out_PP;
+	PB.GPIO_Speed = GPIO_Speed_50MHz;
+	GPIO_Init(GPIOB, &PB);
+    
+    PC.GPIO_Pin = GPIO_Pin_14|GPIO_Pin_15;
+	PC.GPIO_Mode = GPIO_Mode_Out_PP;
+	PC.GPIO_Speed = GPIO_Speed_50MHz;
+	GPIO_Init(GPIOC, &PC);
 	
 }
 /***********************************GPIO³õÊ¼»¯********************************************/
 
+
 /***********************************LCD³õÊ¼»¯********************************************/
 void LCD_INIT(void){	//³õÊ¼»¯
 	GPIO_INIT();	//GPIOµÄ³õÊ¼»¯£¬ÔÚLCD_INIT±»µ÷ÓÃÊ±×Ô¶¯µ÷ÓÃ
-	
-	GPIO_Write( GPIOA, 0x0000 );		//³õÊ¼»¯GPIOAºÍGOIOBµÄÖµÎª0x0000£¬¿ÉÒÔ²»ÓÃ£¬¸öÈËÏ°¹ß
-	GPIO_Write( GPIOB, 0x0000 );
-	
-	delay_us(500);
-	
+    rt_thread_mdelay(500);
 	LCD_WRITE_CMD( 0x38 );
-	LCD_WRITE_CMD( 0x0d );	//¿ªÆô¹â±êºÍÉÁË¸
+	LCD_WRITE_CMD( 0x0c );	//¿ªÆô¹â±êºÍÉÁË¸
 	LCD_WRITE_CMD( 0x06 );
 	LCD_WRITE_CMD( 0x01 );
+    LCD_WRITE_CMD( 0x80 );
 }
 /***********************************LCD³õÊ¼»¯********************************************/
 
+
+void LCD_DATA_WRITE(unsigned char data)
+{
+    //  0   1   2   3    4   5   6   7
+    //  a7  a1  b0  c15  a4  c14 b7  b8
+    if(data & 0x01)
+    {
+        SET_D0();
+    }else
+    {
+        CLR_D0();
+    }
+    if(data & 0x02)
+    {
+        SET_D1();
+    }else
+    {
+        CLR_D1();
+    }
+    if(data & 0x04)
+    {
+        SET_D2();
+    }else
+    {
+        CLR_D2();
+    }
+    if(data & 0x08)
+    {
+        SET_D3();
+    }else
+    {
+        CLR_D3();
+    }
+    if(data & 0x10)
+    {
+        SET_D4();
+    }else
+    {
+        CLR_D4();
+    }
+    if(data & 0x20)
+    {
+        SET_D5();
+    }else
+    {
+        CLR_D5();
+    }
+    if(data & 0x40)
+    {
+        SET_D6();
+    }else
+    {
+        CLR_D6();
+    }
+    if(data & 0x80)
+    {
+        SET_D7();
+    }else
+    {
+        CLR_D7();
+    }
+}
+
 /***********************************Ð´ÈëÃüÁîº¯Êý********************************************/
 void LCD_WRITE_CMD( unsigned char CMD ){		//Ð´ÈëÃüÁîº¯Êý
-	ReadBusy();
-	GPIO_ResetBits( GPIOB, RS );
-	GPIO_ResetBits( GPIOB, RW );
-	GPIO_ResetBits( GPIOB, EN );
-	GPIO_Write( GPIOA, CMD );		//
-	GPIO_SetBits( GPIOB, EN );
-	GPIO_ResetBits( GPIOB, EN );
+//	ReadBusy();
+	GPIO_ResetBits( GPIOA, RS );
+	GPIO_ResetBits( GPIOA, RW );
+	GPIO_ResetBits( GPIOA, EN );
+    
+    LCD_DATA_WRITE(CMD);
+    rt_thread_mdelay(1);
+	GPIO_SetBits( GPIOA, EN );
+    rt_thread_mdelay(5);
+	GPIO_ResetBits( GPIOA, EN );
 }
 /***********************************Ð´ÈëÃüÁîº¯Êý********************************************/
 
 /***********************************Ð´Èëµ¥¸öByteº¯Êý********************************************/
 void LCD_WRITE_ByteDATA( unsigned char ByteData ){	//Ð´Èëµ¥¸öByteº¯Êý
-	ReadBusy();
-	GPIO_SetBits( GPIOB, RS );
-	GPIO_ResetBits( GPIOB, RW );
-	GPIO_ResetBits( GPIOB, EN );
-	GPIO_Write( GPIOA, ByteData );
-	GPIO_SetBits( GPIOB, EN );
-	GPIO_ResetBits( GPIOB, EN );
+//	ReadBusy();
+	GPIO_SetBits( GPIOA, RS );
+	GPIO_ResetBits( GPIOA, RW );
+	GPIO_ResetBits( GPIOA, EN );
+    
+	//GPIO_Write( GPIOA, ByteData );//ÐèÖØÐÂÊµÏÖ
+    LCD_DATA_WRITE(ByteData);
+    rt_thread_mdelay(1);
+	GPIO_SetBits( GPIOA, EN );
+    rt_thread_mdelay(5);
+	GPIO_ResetBits( GPIOA, EN );
 }
 
 /***********************************Ð´Èëµ¥¸öByteº¯Êý********************************************/
@@ -101,20 +178,26 @@ void LCD_WRITE_StrDATA( unsigned char *StrData, unsigned char row, unsigned char
 
 /***********************************¶ÁÃ¦º¯Êý********************************************/
 void ReadBusy(void){		//¶ÁÃ¦º¯Êý£¬¶ÁÃ¦Ö®Ç°¼ÇµÃ¸ü¸ÄÒý½ÅµÄ¹¤×÷·½Ê½£¡£¡£¡ÒòÎªSTM32µÄIO²»ÊÇ×¼Ë«ÏòIO
-	GPIO_Write( GPIOA, 0x00ff );	
-	
+	//GPIO_Write( GPIOA, 0x00ff );//¸Ä¶¯ÒÔÏÂ	
+	LCD_DATA_WRITE(0xff);
+    
+    //B8<--A7
 	GPIO_InitTypeDef p;
-	p.GPIO_Pin = GPIO_Pin_7;		//Ñ¡¶¨GPIOAµÄµÚÆßPin
-	p.GPIO_Mode = GPIO_Mode_IN_FLOATING;	//µÚÆßPinµÄ¹¤×÷·½Ê½Îª¸¡¿ÕÊäÈëÄ£Ê½£¬ÓÃÓÚ¼ì²âLCD1602µÄÃ¦×´Ì¬
+    GPIO_InitTypeDef PB;
+	GPIO_InitTypeDef PA;
+    GPIO_InitTypeDef PC;
+    
+	p.GPIO_Pin = GPIO_Pin_10;		//Ñ¡¶¨GPIOAµÄµÚÆßPin
+	p.GPIO_Mode = GPIO_Mode_IPD;	//µÚÆßPinµÄ¹¤×÷·½Ê½Îª¸¡¿ÕÊäÈëÄ£Ê½£¬ÓÃÓÚ¼ì²âLCD1602µÄÃ¦×´Ì¬
 	p.GPIO_Speed = GPIO_Speed_50MHz;
-	GPIO_Init( GPIOA, &p );
+	GPIO_Init( GPIOB, &p );
 	
-	GPIO_ResetBits( GPIOB, RS );//RSÀ­µÍ
-	GPIO_SetBits( GPIOB, RW );//RWÀ­¸ß
+	GPIO_ResetBits( GPIOA, RS );//RSÀ­µÍ
+	GPIO_SetBits( GPIOA, RW );//RWÀ­¸ß
 	
-	GPIO_SetBits( GPIOB, EN );	//Ê¹ÄÜ¿ª
-	while( GPIO_ReadInputDataBit( GPIOA, GPIO_Pin_7 ) );	//¶ÁµÚÆßPin×´Ì¬£¬Èç¹ûÒ»Ö±Îª1ÔòÑ­»·µÈ´ý
-	GPIO_ResetBits( GPIOB, EN );//Ê¹ÄÜ¹Ø
+    GPIO_SetBits( GPIOA, EN );//Ê¹ÄÜ¹Ø
+	while( GPIO_ReadInputDataBit( GPIOB, GPIO_Pin_10 ) );	//¶ÁµÚÆßPin×´Ì¬£¬Èç¹ûÒ»Ö±Îª1ÔòÑ­»·µÈ´ý
+    GPIO_ResetBits( GPIOA, EN );	//Ê¹ÄÜ¿ª
 	/*do{
 		GPIO_ResetBits( GPIOB, EN );
 		GPIO_SetBits( GPIOB, EN );
@@ -122,12 +205,27 @@ void ReadBusy(void){		//¶ÁÃ¦º¯Êý£¬¶ÁÃ¦Ö®Ç°¼ÇµÃ¸ü¸ÄÒý½ÅµÄ¹¤×÷·½Ê½£¡£¡£¡ÒòÎªSTM32µ
 		GPIO_ResetBits( GPIOB, EN );
 	}while( Flag );*/
 	
-	p.GPIO_Pin = GPIO_Pin_0|GPIO_Pin_1|GPIO_Pin_2|
-				  GPIO_Pin_3|GPIO_Pin_4|GPIO_Pin_5|
-				  GPIO_Pin_6|GPIO_Pin_7;		//Ê¹GPIOAµÄ×´Ì¬»¹Ô­³ÉÍÆÍìÄ£Ê½
-	p.GPIO_Mode = GPIO_Mode_Out_PP;
-	p.GPIO_Speed = GPIO_Speed_50MHz;
-	GPIO_Init( GPIOA, &p  );
+    PA.GPIO_Pin = GPIO_Pin_7|GPIO_Pin_1;
+	PA.GPIO_Mode = GPIO_Mode_Out_PP;
+	PA.GPIO_Speed = GPIO_Speed_50MHz;
+	GPIO_Init(GPIOA, &PA);
+    
+    PB.GPIO_Pin = GPIO_Pin_1|GPIO_Pin_11|GPIO_Pin_0|GPIO_Pin_10;
+	PB.GPIO_Mode = GPIO_Mode_Out_PP;
+	PB.GPIO_Speed = GPIO_Speed_50MHz;
+	GPIO_Init(GPIOB, &PB);
+    
+    PC.GPIO_Pin = GPIO_Pin_14|GPIO_Pin_15;
+	PC.GPIO_Mode = GPIO_Mode_Out_PP;
+	PC.GPIO_Speed = GPIO_Speed_50MHz;
+	GPIO_Init(GPIOC, &PC);
+    
+//	p.GPIO_Pin = GPIO_Pin_0|GPIO_Pin_1|GPIO_Pin_2|
+//				  GPIO_Pin_3|GPIO_Pin_4|GPIO_Pin_5|
+//				  GPIO_Pin_6|GPIO_Pin_7;		//Ê¹GPIOAµÄ×´Ì¬»¹Ô­³ÉÍÆÍìÄ£Ê½
+//	p.GPIO_Mode = GPIO_Mode_Out_PP;
+//	p.GPIO_Speed = GPIO_Speed_50MHz;
+//	GPIO_Init( GPIOA, &p  );
 }
 /***********************************¶ÁÃ¦º¯Êý********************************************/
 

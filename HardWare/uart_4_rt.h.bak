@@ -1,0 +1,6 @@
+#ifndef __RTTHREAD_CFG_H__
+#define __RTTHREAD_CFG_H__
+
+static int uart_init(void);
+
+#endif
