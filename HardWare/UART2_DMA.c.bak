@@ -142,9 +142,9 @@ void USART2_IRQHandler(void)
     u8 tem;
     if(USART_GetITStatus(USART2, USART_IT_IDLE) != RESET)
     {   
-//        tem = USART2->SR;   //先读SR后读DR可以清除DR内容
-//        tem = USART2->DR;
-//        tem = tem + 1;        //防止编译器警告
+        tem = USART2->SR;   //先读SR后读DR可以清除DR内容
+        tem = USART2->DR;
+        tem = tem + 1;        //防止编译器警告
         
         receive_finish_handler(RXBUFFERMAX - DMA_GetCurrDataCounter(DMA1_Channel6));
         DMA_Cmd(DMA1_Channel6, DISABLE);

@@ -9,15 +9,15 @@
 unsigned char tem[] = {'T','K','Q','T','E','S','T','I','N','G'};	//摄氏度符号“℃”的字模
 
 ALIGN(RT_ALIGN_SIZE)
-static char thread_hello_stack[1024];
+static char thread_hello_stack[512];
 static struct rt_thread thread_hello;
 
 static void thread_hello_entry(void *param)
 {
     while(1)
     {
-        //rt_kprintf("Hello,world!\n");
-        rt_thread_mdelay(100);
+        rt_kprintf("Hello,world!\n");
+        rt_thread_mdelay(2000);
     }
 }
 
@@ -25,9 +25,6 @@ static rt_thread_t thread_lcd_show = RT_NULL;
 
 static void thread_lcd_entry(void *param)
 {
-    esp_erro_status esp_ans = ESP_SUC;
-    uInt8 r_datas[20];
-    uInt32 r_len = 0;
     //	WUserImg( 0, tem );	//写入用户自定义字符
     //	LCD_WRITE_CMD( 0x80 );				//指定屏幕第一行第一列输出
     //	LCD_WRITE_ByteDATA( 0x00 );			//输出第一个用户自定义字符
@@ -74,24 +71,29 @@ void led_init(void)
 
 int main()
 {	
-
+    rt_err_t rt_e;
+    
     LCD_INIT();		//LCD1602初始化
     led_init();
     init_esp_hardware();
     
-    thread_lcd_show = rt_thread_create("lcd", thread_lcd_entry, RT_NULL, 512, 18, 5);
+    thread_lcd_show = rt_thread_create("lcd", thread_lcd_entry, RT_NULL, 512, 3, 5);
     if(thread_lcd_show != RT_NULL)
     {
         rt_thread_startup(thread_lcd_show);
     }
     
-    thread_led = rt_thread_create("led", thread_led_entry, RT_NULL, 512, 19, 5);
+    thread_led = rt_thread_create("led", thread_led_entry, RT_NULL, 512, 4, 5);
     if(thread_led != RT_NULL)
     {
         rt_thread_startup(thread_led);
     }
     
-    rt_thread_init(&thread_hello, "hi", thread_hello_entry, RT_NULL,
-                    thread_hello_stack, sizeof(thread_hello_stack), 20, 5); 
-    rt_thread_startup(&thread_hello);
+    rt_e = rt_thread_init(&thread_hello, "hi", thread_hello_entry, RT_NULL,
+                    thread_hello_stack, sizeof(thread_hello_stack), 5, 5); 
+    
+    if(rt_e == RT_EOK)
+    {
+        rt_thread_startup(&thread_hello);
+    }
 }

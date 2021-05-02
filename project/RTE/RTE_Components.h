@@ -16,7 +16,6 @@
  */
 #define CMSIS_device_header "stm32f10x.h"
 
-#define RTE_USING_DEVICE
 #define RTE_USING_FINSH
 
 #endif /* RTE_COMPONENTS_H */
