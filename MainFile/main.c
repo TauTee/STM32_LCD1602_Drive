@@ -16,7 +16,7 @@ static void thread_hello_entry(void *param)
 {
     while(1)
     {
-        rt_kprintf("Hello,world!\n");
+        //rt_kprintf("Hello,world!\n");
         rt_thread_mdelay(2000);
     }
 }

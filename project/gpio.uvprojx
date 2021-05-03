@@ -560,6 +560,11 @@
               <FileType>1</FileType>
               <FilePath>..\HardWare\UART2_DMA.c</FilePath>
             </File>
+            <File>
+              <FileName>esp8266_finsh.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\HardWare\esp8266_finsh.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

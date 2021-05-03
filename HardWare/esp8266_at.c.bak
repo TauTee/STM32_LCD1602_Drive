@@ -7,7 +7,6 @@
 static void esp_puts(unsigned char *istr)
 {   
     t_send(istr, strlen(istr));
-    t_send("\r\n", 2);
 }
 
 __inline void esp_send(void *datas, unsigned int length)
@@ -94,21 +93,21 @@ void init_esp_hardware(void)
 
 esp_erro_status esp_test(void)
 {
-    esp_puts("AT");
+    esp_puts("AT\r\n");
     
     return esp_wait_ans("OK");
 }
 
 esp_erro_status esp_rst(void)
 {
-    esp_puts("AT+RST");
+    esp_puts("AT+RST\r\n");
     
     return esp_wait_ans("OK");
 }
 
 esp_erro_status esp_set_wifi_mode(WIFIMODE imode)
 {
-    unsigned char cmd[] = "AT+CWMODE_DEF=0"; 
+    unsigned char cmd[] = "AT+CWMODE_DEF=0\r\n"; 
     
     cmd[sizeof(cmd)-1] = imode;
     esp_puts(cmd);
@@ -120,7 +119,7 @@ esp_erro_status esp_connect_wifi(unsigned char *issid, unsigned char *ipassword)
 {
     unsigned char cmd[50];
     
-    sprintf(cmd, "AT+CWJAP_DEF=\"%s\",\"%s\"", issid, ipassword);
+    sprintf(cmd, "AT+CWJAP_DEF=\"%s\",\"%s\"\r\n", issid, ipassword);
     esp_puts(cmd);
     
     return esp_wait_ans("OK");
@@ -128,14 +127,14 @@ esp_erro_status esp_connect_wifi(unsigned char *issid, unsigned char *ipassword)
 
 esp_erro_status esp_disconnect_wifi(void)
 {
-    esp_puts("AT+CWQAP");
+    esp_puts("AT+CWQAP\r\n");
     
     return esp_wait_ans("OK");
 }
 
 esp_erro_status esp_get_ip(void)
 {
-    esp_puts("AT+CIPSTA_CUR?");
+    esp_puts("AT+CIPSTA_CUR?\r\n");
     
     return esp_wait_ans("OK");
 }
@@ -144,7 +143,7 @@ esp_erro_status esp_set_ip(unsigned char *iipaddress)
 {
     unsigned char cmd[50];
     
-    sprintf(cmd, "AT+CIPSTA_DEF=\"%s\"", iipaddress);
+    sprintf(cmd, "AT+CIPSTA_DEF=\"%s\"\r\n", iipaddress);
     esp_puts(cmd);
     
     return esp_wait_ans("OK");
@@ -154,7 +153,7 @@ esp_erro_status esp_build_TCPUDP(unsigned char *ip_domain, unsigned char *imode,
 {
     unsigned char cmd[50];
     
-    sprintf(cmd, "AT+CIPSTART=\"%s\",\"%s\",%d", imode, ip_domain, port);
+    sprintf(cmd, "AT+CIPSTART=\"%s\",\"%s\",%d\r\n", imode, ip_domain, port);
     esp_puts(cmd);
     
     return esp_wait_ans("OK");
@@ -162,7 +161,7 @@ esp_erro_status esp_build_TCPUDP(unsigned char *ip_domain, unsigned char *imode,
 
 esp_erro_status esp_set_tcpmode(TCPMODE tcp_mode)
 {
-    unsigned char cmd[] = "AT+CIPSTART=0";
+    unsigned char cmd[] = "AT+CIPSTART=0\r\n";
     
     cmd[sizeof(cmd)-1] = tcp_mode;
     esp_puts(cmd);
@@ -175,7 +174,7 @@ esp_erro_status esp_ipsend(unsigned char *idata, unsigned int length)
     unsigned char cmd[20];
     esp_erro_status return_status = ESP_SUC;
     
-    sprintf(cmd, "AT+CIPSEND=%d", length);
+    sprintf(cmd, "AT+CIPSEND=%d\r\n", length);
     esp_puts(cmd);
     
     if(esp_wait_ans(">") == ESP_SUC)
@@ -195,7 +194,7 @@ esp_erro_status esp_ipsend(unsigned char *idata, unsigned int length)
 
 esp_erro_status esp_stop_TCPUDP(void)
 {
-    esp_puts("AT+CIPCLOSE");
+    esp_puts("AT+CIPCLOSE\r\n");
     
     return esp_wait_ans("OK");
 }

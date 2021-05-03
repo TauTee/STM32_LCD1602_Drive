@@ -109,7 +109,7 @@ esp_erro_status esp_set_wifi_mode(WIFIMODE imode)
 {
     unsigned char cmd[] = "AT+CWMODE_DEF=0\r\n"; 
     
-    cmd[sizeof(cmd)-1] = imode;
+    cmd[sizeof(cmd)-1-3] = imode;
     esp_puts(cmd);
     
     return esp_wait_ans("OK");
@@ -163,7 +163,7 @@ esp_erro_status esp_set_tcpmode(TCPMODE tcp_mode)
 {
     unsigned char cmd[] = "AT+CIPSTART=0\r\n";
     
-    cmd[sizeof(cmd)-1] = tcp_mode;
+    cmd[sizeof(cmd)-1-2] = tcp_mode;
     esp_puts(cmd);
     
     return esp_wait_ans("OK");    
