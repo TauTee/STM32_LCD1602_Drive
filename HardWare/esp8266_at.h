@@ -1,7 +1,7 @@
 #ifndef __ESP8266_AT_H__
 #define __ESP8266_AT_H__
 
-#define MAX_WAIT_TIME 1000
+#define MAX_WAIT_TIME 2000
 #define WAIT_REST_TIME 10
 
 typedef enum 

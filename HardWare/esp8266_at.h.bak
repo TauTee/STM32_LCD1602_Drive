@@ -1,7 +1,7 @@
 #ifndef __ESP8266_AT_H__
 #define __ESP8266_AT_H__
 
-#define MAX_WAIT_TIME 1000
+#define MAX_WAIT_TIME 5000
 #define WAIT_REST_TIME 10
 
 typedef enum 
@@ -30,13 +30,13 @@ void init_esp_hardware(void);
 esp_erro_status esp_test(void);
 esp_erro_status esp_rst(void);
 esp_erro_status esp_set_wifi_mode(WIFIMODE imode);
-esp_erro_status esp_connect_wifi(char *issid, char *ipassword);
+esp_erro_status esp_connect_wifi(unsigned char *issid, unsigned char *ipassword);
 esp_erro_status esp_disconnect_wifi(void);
 esp_erro_status esp_get_ip(void);
-esp_erro_status esp_set_ip(char *iipaddress);
-esp_erro_status esp_build_TCPUDP(char *ip_domain, char *imode, unsigned int port);
+esp_erro_status esp_set_ip(unsigned char *iipaddress);
+esp_erro_status esp_build_TCPUDP(unsigned char *ip_domain, unsigned char *imode, unsigned int port);
 esp_erro_status esp_set_tcpmode(TCPMODE tcp_mode);
-esp_erro_status esp_ipsend(char *idata, unsigned int length);
+esp_erro_status esp_ipsend(unsigned char *idata, unsigned int length);
 esp_erro_status esp_stop_TCPUDP(void);
 
 #endif

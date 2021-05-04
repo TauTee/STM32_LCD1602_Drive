@@ -46,6 +46,11 @@ esp_erro_status esp_wait_ans(unsigned char *ians)
                 break;
 
             case FINDED:
+                if(find_index >= wait_str_len)
+                {
+                    //找到了
+                    goto WAITEND;
+                }
                 if (read_ch != wait_str[find_index])
                 {
                     status = NOFIND;
@@ -53,11 +58,11 @@ esp_erro_status esp_wait_ans(unsigned char *ians)
                 }else
                 {
                     find_index++;
-                    if(find_index >= wait_str_len)
-                    {
-                        //找到了
-                        goto WAITEND;
-                    }
+//                    if(find_index >= wait_str_len)
+//                    {
+//                        //找到了
+//                        goto WAITEND;
+//                    }
                 }
                 break;
 
@@ -182,10 +187,12 @@ esp_erro_status esp_ipsend(unsigned char *idata, unsigned int length)
         esp_send(idata, length);
         if(esp_wait_ans("OK") != ESP_SUC)
         {
+            rt_kprintf("no ok\n");
             return_status = ESP_ERROR;
         }
     }else
     {
+        rt_kprintf("no >\n");
         return_status = ESP_ERROR;
     }
     
