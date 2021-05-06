@@ -46,11 +46,6 @@ esp_erro_status esp_wait_ans(unsigned char *ians)
                 break;
 
             case FINDED:
-                if(find_index >= wait_str_len)
-                {
-                    //找到了
-                    goto WAITEND;
-                }
                 if (read_ch != wait_str[find_index])
                 {
                     status = NOFIND;
@@ -69,6 +64,11 @@ esp_erro_status esp_wait_ans(unsigned char *ians)
             default:
                 status = NOFIND;
                 break;
+            }
+            if(find_index >= wait_str_len)
+            {
+                //找到了
+                goto WAITEND;
             }
         }else
         {

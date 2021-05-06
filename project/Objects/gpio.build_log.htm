@@ -5,32 +5,28 @@
 <h2>Tool Versions:</h2>
 IDE-Version: ¦ÌVision V5.21.1.0
 Copyright (C) 2016 ARM Ltd and ARM Germany GmbH. All rights reserved.
-License Information: a 995633066@qq.com, 2, LIC=YA39H-WAFN3-PCIJ8-3ESN6-4QU6I-DF05U
+License Information: 12 dell, 23, LIC=65ISZ-JQSLA-RAXDM-X9F5H-PJ1CL-2N6CF
  
 Tool Versions:
 Toolchain:       MDK-ARM Plus  Version: 5.21a
 Toolchain Path:  C:\Keil_v5\ARM\ARMCC\Bin
-C Compiler:      Armcc.exe V5.06 update 3 (build 300)
-Assembler:       Armasm.exe V5.06 update 3 (build 300)
-Linker/Locator:  ArmLink.exe V5.06 update 3 (build 300)
-Library Manager: ArmAr.exe V5.06 update 3 (build 300)
-Hex Converter:   FromElf.exe V5.06 update 3 (build 300)
+C Compiler:      Armcc.exe V5.05 update 1 (build 106)
+Assembler:       Armasm.exe V5.05 update 1 (build 106)
+Linker/Locator:  ArmLink.exe V5.05 update 1 (build 106)
+Library Manager: ArmAr.exe V5.05 update 1 (build 106)
+Hex Converter:   FromElf.exe V5.05 update 1 (build 106)
 CPU DLL:         SARMCM3.DLL V5.21a
 Dialog DLL:      DARMSTM.DLL V1.66.0.1
 Target DLL:      STLink\ST-LINKIII-KEIL_SWO.dll V2.0.18.0
 Dialog DLL:      TARMSTM.DLL V1.65.0.0
  
 <h2>Project:</h2>
-D:\Users\99563\Desktop\SMART-HOLDER\smart_holder_mdk\project\gpio.uvprojx
-Project File Date:  05/03/2021
+C:\Users\dell\Desktop\SMART-HOLDER\smart_holder_mdk\project\gpio.uvprojx
+Project File Date:  05/06/2021
 
 <h2>Output:</h2>
-*** Using Compiler 'V5.06 update 3 (build 300)', folder: 'C:\Keil_v5\ARM\ARMCC\Bin'
+*** Using Compiler 'V5.05 update 1 (build 106)', folder: 'C:\Keil_v5\ARM\ARMCC\Bin'
 Build target 'Gpio'
-compiling cycle_buffer_io.c...
-..\HardWare\cycle_buffer\cycle_buffer_io.c(279): warning:  #223-D: function "vsprintf" declared implicitly
-      vsprintf(buf, format, args);       
-..\HardWare\cycle_buffer\cycle_buffer_io.c: 1 warning, 0 errors
 compiling esp8266_at.c...
 ..\HardWare\esp8266_at.c(9): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "const char *"
       t_send(istr, strlen(istr));
@@ -45,57 +41,51 @@ compiling esp8266_at.c...
 ..\HardWare\esp8266_at.c(182): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *restrict"
       sprintf(cmd, "AT+CIPSEND=%d\r\n", length);
 ..\HardWare\esp8266_at.c: 6 warnings, 0 errors
-compiling main.c...
-..\MainFile\main.c(35): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *restrict"
-          sprintf(time_str, "%d!", (unsigned int)rt_tick_get());
-..\MainFile\main.c: 1 warning, 0 errors
-compiling board.c...
-compiling UART2_DMA.c...
 linking...
-Program Size: Code=25120 RO-data=2868 RW-data=328 ZI-data=15256  
+Program Size: Code=26788 RO-data=2952 RW-data=348 ZI-data=17684  
 FromELF: creating hex file...
-".\Objects\gpio.axf" - 0 Error(s), 8 Warning(s).
+".\Objects\gpio.axf" - 0 Error(s), 6 Warning(s).
 
 <h2>Software Packages used:</h2>
 
 Package Vendor: RealThread
                 https://www.rt-thread.org/download/mdk/RealThread.RT-Thread.3.1.3.pack
-                RealThread.RT-Thread::RTOS:kernel:3.1.3
+                RealThread.RT-Thread::RTOS:shell:3.1.3
                 RT-Thread Software Components
-   * Component: kernel Version: 3.1.3
    * Component: shell Version: 3.1.3
+   * Component: kernel Version: 3.1.3
 
 <h2>Collection of Component include folders:</h2>
-  D:\Users\99563\Desktop\SMART-HOLDER\smart_holder_mdk\project\RTE
-  D:\Users\99563\Desktop\SMART-HOLDER\smart_holder_mdk\project\RTE\RTOS
-  D:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\1.0.5\Device\Include
-  D:\Keil_v5\ARM\PACK\RealThread\RT-Thread\3.1.3\components\finsh
-  D:\Keil_v5\ARM\PACK\RealThread\RT-Thread\3.1.3\include
+  C:\Users\dell\Desktop\SMART-HOLDER\smart_holder_mdk\project\RTE
+  C:\Users\dell\Desktop\SMART-HOLDER\smart_holder_mdk\project\RTE\RTOS
+  C:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\1.0.5\Device\Include
+  C:\Keil_v5\ARM\PACK\RealThread\RT-Thread\3.1.3\components\finsh
+  C:\Keil_v5\ARM\PACK\RealThread\RT-Thread\3.1.3\include
 
 <h2>Collection of Component Files used:</h2>
 
-   * Component: RealThread.RT-Thread::RTOS:kernel:3.1.3
-      Source file:   src\idle.c
-      Source file:   src\components.c
-      Source file:   libcpu\arm\cortex-m3\cpuport.c
-      Source file:   src\mem.c
-      Source file:   libcpu\arm\cortex-m3\context_rvds.S
-      Source file:   src\clock.c
-      Source file:   bsp\board.c
-      Source file:   src\ipc.c
-      Source file:   src\irq.c
-      Source file:   src\kservice.c
-      Source file:   src\thread.c
-      Source file:   src\timer.c
-      Source file:   src\scheduler.c
-      Include file:  bsp\rtconfig.h
-      Source file:   src\object.c
-
    * Component: RealThread.RT-Thread::RTOS:shell:3.1.3
-      Source file:   components\finsh\msh.c
-      Source file:   components\finsh\cmd.c
       Source file:   components\finsh\shell.c
-Build Time Elapsed:  00:00:04
+      Source file:   components\finsh\cmd.c
+      Source file:   components\finsh\msh.c
+
+   * Component: RealThread.RT-Thread::RTOS:kernel:3.1.3
+      Source file:   src\irq.c
+      Source file:   src\mem.c
+      Source file:   src\kservice.c
+      Source file:   src\object.c
+      Source file:   src\scheduler.c
+      Source file:   src\thread.c
+      Source file:   src\ipc.c
+      Source file:   bsp\board.c
+      Include file:  bsp\rtconfig.h
+      Source file:   src\clock.c
+      Source file:   src\components.c
+      Source file:   src\idle.c
+      Source file:   libcpu\arm\cortex-m3\context_rvds.S
+      Source file:   libcpu\arm\cortex-m3\cpuport.c
+      Source file:   src\timer.c
+Build Time Elapsed:  00:00:01
 </pre>
 </body>
 </html>

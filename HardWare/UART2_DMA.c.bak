@@ -7,6 +7,7 @@
 #include "misc.h"
 #include "UART2_DMA.h"
 #include "cycle_buffer_io.h"
+#include <rtthread.h>
 
 uInt32 TXBUFFERMAX;
 uInt32 RXBUFFERMAX;
@@ -127,18 +128,21 @@ int Initial_UART2()
 
 void DMA1_Channel7_IRQHandler()
 {
+    rt_interrupt_enter();
     if(DMA_GetITStatus(DMA1_IT_TC7) == SET)
     {
         while(USART_GetFlagStatus(USART2, USART_FLAG_TC) != SET);
         transmit_finish_handler();
         DMA_ClearITPendingBit(DMA1_IT_TC7);
     }
+    rt_interrupt_leave();
 }
 
 
 unsigned int in_i = 0;
 void USART2_IRQHandler(void)
 {
+    rt_interrupt_enter();
     u8 tem;
     if(USART_GetITStatus(USART2, USART_IT_IDLE) != RESET)
     {   
@@ -152,5 +156,6 @@ void USART2_IRQHandler(void)
         DMA_Cmd(DMA1_Channel6, ENABLE);
         USART_ClearITPendingBit(USART2, USART_IT_IDLE); 
     }
+    rt_interrupt_leave();
 }
 

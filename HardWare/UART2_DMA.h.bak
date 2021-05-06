@@ -4,8 +4,9 @@
 #include "my_type.h"
 
 int Initial_UART2(void);
-void set_buffer(uInt8 *txbuf, uInt16 txbufmax, uInt8 *rxbuf, uInt16 rxbufmax);
-void uart2_tx_now(uInt16 length);
+void set_buffer(uInt8 *txbuf, uInt32 txbufmax, uInt8 *rxbuf, uInt32 rxbufmax);
+void uart2_tx_now(uInt32 length);
+void uart2_tx_all_now(void);
 void uart2_tx_stop(void);
 
 #endif

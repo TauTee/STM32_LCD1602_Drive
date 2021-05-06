@@ -23,6 +23,11 @@ void uart2_tx_now(uInt32 length)
     DMA_Cmd(DMA1_Channel7, ENABLE);
 }
 
+void uart2_tx_all_now(void)
+{
+    uart2_tx_now(TXBUFFERMAX);
+}
+
 void uart2_tx_stop(void)
 {
 	DMA_Cmd(DMA1_Channel7, DISABLE);
@@ -133,6 +138,7 @@ void DMA1_Channel7_IRQHandler()
     {
         while(USART_GetFlagStatus(USART2, USART_FLAG_TC) != SET);
         transmit_finish_handler();
+        
         DMA_ClearITPendingBit(DMA1_IT_TC7);
     }
     rt_interrupt_leave();
@@ -151,9 +157,7 @@ void USART2_IRQHandler(void)
         tem = tem + 1;        //∑¿÷π±‡“Î∆˜æØ∏Ê
         
         receive_finish_handler(RXBUFFERMAX - DMA_GetCurrDataCounter(DMA1_Channel6));
-        DMA_Cmd(DMA1_Channel6, DISABLE);
-        DMA_SetCurrDataCounter(DMA1_Channel6, RXBUFFERMAX);
-        DMA_Cmd(DMA1_Channel6, ENABLE);
+        
         USART_ClearITPendingBit(USART2, USART_IT_IDLE); 
     }
     rt_interrupt_leave();

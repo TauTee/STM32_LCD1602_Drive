@@ -14,6 +14,11 @@
 #define GET_BUFFER_SIZE 1024     //发送环形缓冲区
 #define RECEIVE_BUFFER_SIZE 128     //DMA发送缓冲区
 
+enum TRLOCK
+{
+    WRITE = 0,
+    READ  = !WRITE
+};
 
 /*
 类名：cycleBuffer
@@ -29,6 +34,8 @@ typedef struct _buffer
     uInt32  (*get_len)(struct _buffer *this_buffer);        //返回缓冲区内容长度
     uInt32  (*write)(struct _buffer *this_buffer,  void *datas, uInt32 len);    //写缓冲区
     uInt32  (*read)(struct _buffer *this_buffer, void *datas, uInt32 len);      //读缓冲区
+    void    (*enter_lock)(struct _buffer *this_buffer, enum TRLOCK lock_type);
+    void    (*leave_lock)(struct _buffer *this_buffer, enum TRLOCK lock_type);
 }cycleBuffer;
 
 /*          对外接口            */

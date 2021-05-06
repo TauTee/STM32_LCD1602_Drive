@@ -85,7 +85,7 @@
 // </c>
 // <c1>Using Mutex
 //  <i>Using Mutex
-//#define RT_USING_MUTEX
+#define RT_USING_MUTEX
 // </c>
 // <c1>Using Event
 //  <i>Using Event
@@ -93,7 +93,7 @@
 // </c>
 // <c1>Using MailBox
 //  <i>Using MailBox
-#define RT_USING_MAILBOX
+//#define RT_USING_MAILBOX
 // </c>
 // <c1>Using Message Queue
 //  <i>Using Message Queue

@@ -3,9 +3,11 @@
 
 #include "my_type.h"
 
+void Initial_DMA(void);
 int Initial_UART2(void);
 void set_buffer(uInt8 *txbuf, uInt32 txbufmax, uInt8 *rxbuf, uInt32 rxbufmax);
 void uart2_tx_now(uInt32 length);
+void uart2_tx_all_now(void);
 void uart2_tx_stop(void);
 
 #endif

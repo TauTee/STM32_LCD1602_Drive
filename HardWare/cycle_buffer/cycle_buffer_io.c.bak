@@ -14,9 +14,29 @@
 #include <stdarg.h>
 #include <string.h>
 #include <rtthread.h>
+#include <stdio.h>
 
-#include "UART2.h"
+#include "stm32f10x_dma.h"
+#include "UART2_DMA.h"
 
+#define WAIT_LOCK_TIME_MAX RT_WAITING_FOREVER
+
+struct rt_semaphore sem_transmit_complete;
+struct rt_semaphore sem_receive_complete;
+
+ALIGN(RT_ALIGN_SIZE)
+static char thread_transmit_stack[1024];
+static struct rt_thread thread_transmit;
+
+static void thread_transmit_entry(void *param);
+
+ALIGN(RT_ALIGN_SIZE)
+static char thread_receive_stack[1024];
+static struct rt_thread thread_receive;
+
+
+unsigned int receive_length;
+static void thread_receive_entry(void *param);
 
 /*       私有方法声明             */
 /*---------------------------------------------------------------------------------*/
@@ -24,6 +44,15 @@ static boollen is_buffer_empty  (cycleBuffer* ibuffer);
 static uInt32  get_buffer_len   (cycleBuffer *i_buffer);
 static uInt32  write_buffer     (cycleBuffer *i_buffer,  void *datas, uInt32 len);
 static uInt32  read_buffer      (struct _buffer *i_buffer, void *datas, uInt32 len);
+__inline void begain_transmit(uInt32 length);
+__inline void stop_transmit(void);
+__inline void transmit_little(uInt32 length);
+__inline void rise_erro(void *err);
+static void init_hardware(void);
+static void os_enter_lock(cycleBuffer *thisbuff, enum TRLOCK lock_type);
+static void os_leave_lock(cycleBuffer *thisbuff, enum TRLOCK lock_type);
+static void noos_enter_lock(cycleBuffer *thisbuff, enum TRLOCK lock_type);
+static void noos_leave_lock(cycleBuffer *thisbuff, enum TRLOCK lock_type);
 /*---------------------------------------------------------------------------------*/
 
 
@@ -55,7 +84,9 @@ cycleBuffer sysTransmitBuffer =
     is_buffer_empty, 
     get_buffer_len, 
     write_buffer,
-    read_buffer
+    read_buffer,
+    os_enter_lock,
+    os_leave_lock
 };
 
 /*系统terminal接收用的环形缓冲区
@@ -68,7 +99,9 @@ cycleBuffer sysReceiveBuffer =
     is_buffer_empty, 
     get_buffer_len, 
     write_buffer,
-    read_buffer
+    read_buffer,
+    os_enter_lock,
+    os_leave_lock
 };
 
 /*---------------------------------------------------------------------------------*/
@@ -104,13 +137,86 @@ __inline void rise_erro(void *err)
 }
 
 //初始化串口硬件
-void init_hardware(void)
+static void init_hardware(void)
 {
     set_buffer(transmit_buffer, TRANSMIT_BUFFER_SIZE, receive_buffer, RECEIVE_BUFFER_SIZE);
-//    Initial_DMA();
-//    Initial_UART2();
-    init_dma_uart();
+    Initial_DMA();
+    Initial_UART2();
 }
+
+#ifdef NORTOS
+static flagStatus write_lock_flag = mRESET;
+static flagStatus read_lock_flag = mRESET;
+#else
+static struct rt_mutex write_lock_mutex;
+static struct rt_mutex read_lock_mutex; 
+#endif
+
+static void noos_enter_lock(cycleBuffer *thisbuff, enum TRLOCK lock_type)
+{
+    ;
+}
+
+static void noos_leave_lock(cycleBuffer *thisbuff, enum TRLOCK lock_type)
+{
+    ;
+}
+
+static void os_enter_lock(cycleBuffer *thisbuff, enum TRLOCK lock_type)
+{
+#ifdef NORTOS
+    if(lock_type == WRITE)
+    {
+        if(write_lock_flag == mRESET)
+        {
+            write_lock_flag = mSET;
+        }else
+        {
+            return;
+        }
+    }else
+    {
+        if(read_lock_flag == mRESET)
+        {
+            read_lock_flag = mSET;
+        }else
+        {
+            return;
+        }
+    }
+#else
+    if(lock_type == WRITE)
+    {
+        rt_mutex_take(&write_lock_mutex, WAIT_LOCK_TIME_MAX);
+    }else
+    {
+        rt_mutex_take(&read_lock_mutex, WAIT_LOCK_TIME_MAX);
+    }
+#endif
+
+}
+
+static void os_leave_lock(cycleBuffer *thisbuff, enum TRLOCK lock_type)
+{
+#ifdef NORTOS
+    if(lock_type == WRITE)
+    {
+        write_lock_flag = mRESET;
+    }else
+    {
+        read_lock_flag = mRESET;
+    }
+#else
+    if(lock_type == WRITE)
+    {
+        rt_mutex_release(&write_lock_mutex);
+    }else
+    {
+        rt_mutex_release(&read_lock_mutex);
+    }
+#endif
+}
+
 
 /*---------------------------------------------------------------------------------*/
 //结束
@@ -162,6 +268,7 @@ static uInt32 write_buffer(cycleBuffer *i_buffer,  void *datas, uInt32 len)
     uInt32 i, r_len      = 0;
     uInt8 (*wdatas)[len] = datas;       //将datas转换成指向数组的指针
     
+    i_buffer->enter_lock(i_buffer, WRITE);
     for(i = 0; i < len; i++)
     {
         if((i_buffer->rear + 1) % i_buffer->size == i_buffer->front)
@@ -175,7 +282,7 @@ static uInt32 write_buffer(cycleBuffer *i_buffer,  void *datas, uInt32 len)
             r_len ++;
         }
     }
-    
+    i_buffer->leave_lock(i_buffer, WRITE);
     return r_len;
 }
 
@@ -193,6 +300,7 @@ static uInt32 read_buffer(struct _buffer *i_buffer, void *datas, uInt32 len)
     uInt32 i, r_len       = 0;
     uInt8  (*rdatas)[len] = datas;       //将datas转换成指向数组的指针
     
+    i_buffer->enter_lock(i_buffer, READ);
     /*循环队列出队操作
     */
     for(i = 0; i < len; i++)
@@ -208,6 +316,7 @@ static uInt32 read_buffer(struct _buffer *i_buffer, void *datas, uInt32 len)
             r_len ++;
         }
     }
+    i_buffer->leave_lock(i_buffer, READ);
     return r_len;
 }
 
@@ -228,11 +337,35 @@ void init_cycle_buffer(cycleBuffer* ibuffer, uInt8 *buffs, uInt32 size)
     ibuffer->is_empty = is_buffer_empty;
     ibuffer->read     = read_buffer;
     ibuffer->write    = write_buffer;
+    ibuffer->enter_lock = noos_enter_lock;
+    ibuffer->leave_lock = noos_leave_lock;
 }
 
 void init_tx_rx(void)
 {
+    rt_err_t rt_e;
     init_hardware();
+#ifndef NORTOS
+    rt_e = rt_thread_init(&thread_receive, "rx", thread_receive_entry, 
+        RT_NULL, thread_receive_stack, sizeof(thread_receive_stack), 6, 5);
+    if(rt_e == RT_EOK)
+    {
+        rt_thread_startup(&thread_receive);
+    }
+    rt_e = rt_thread_init(&thread_transmit, "tx", thread_transmit_entry, 
+            RT_NULL, thread_transmit_stack, sizeof(thread_transmit_stack), 6, 5);
+    if(rt_e == RT_EOK)
+    {
+        rt_thread_startup(&thread_transmit);
+    }
+    
+    rt_mutex_init(&write_lock_mutex, "txesp", RT_IPC_FLAG_FIFO);
+    rt_mutex_init(&read_lock_mutex,  "rxesp", RT_IPC_FLAG_FIFO);
+    rt_sem_init(&sem_receive_complete, "rxok", 1, RT_IPC_FLAG_FIFO);
+    rt_sem_take(&sem_receive_complete, RT_WAITING_FOREVER);
+    rt_sem_init(&sem_transmit_complete, "txok", 1, RT_IPC_FLAG_FIFO);
+    rt_sem_take(&sem_transmit_complete, RT_WAITING_FOREVER);   
+#endif    
 }
 
 /*
@@ -245,11 +378,13 @@ uInt32 t_send(void *datas, uInt32 len)
 {
     unsigned int ret;
     unsigned char *write_datas = (unsigned char *)datas; 
+    
     ret = sysTransmitBuffer.write(&sysTransmitBuffer, write_datas, len);
     if(is_send_close == mSET)
     {
-        begain_transmit(ret);
+        sysTransmitBuffer.read(&sysTransmitBuffer, &transmit_buffer, TRANSMIT_BUFFER_SIZE);       
         is_send_close = mRESET;
+        begain_transmit(ret);
     }
     
     return ret;
@@ -324,6 +459,56 @@ int t_getstr(char *string)
     return i;
 }
 
+static void thread_transmit_entry(void *param)
+{
+    uInt32 len = 0;
+    
+    while(1)
+    {
+        rt_sem_take(&sem_transmit_complete, RT_WAITING_FOREVER);
+
+        len = sysTransmitBuffer.read(&sysTransmitBuffer, &transmit_buffer, TRANSMIT_BUFFER_SIZE);
+        if (len != 0)
+        {             
+            is_send_close = mRESET;
+            transmit_little(len);
+        }
+        else
+        {
+            //关闭发送
+            stop_transmit();
+            is_send_close = mSET;
+        }
+    }
+}
+
+static void thread_receive_entry(void *param)
+{
+    uInt32 actual_len = 0;
+    while(1)
+    {
+        rt_sem_take(&sem_receive_complete, RT_WAITING_FOREVER);
+        
+        if(receive_length > RECEIVE_BUFFER_SIZE)
+        {
+            receive_length = RECEIVE_BUFFER_SIZE;
+            rise_erro("2big2write");
+        }
+        
+        actual_len = sysReceiveBuffer.write(&sysReceiveBuffer, &receive_buffer, receive_length);
+        if (actual_len != receive_length)
+        {                
+            //异常，有一部分数据没能写入，丢失了数据
+            rise_erro("lost_data");
+        }else
+        {
+            //正常写入了一次
+            ;
+        }
+        //uart2_tx_all_now();
+        }
+}
+
 /*
 名称：transmit_finish_handler
 描述：
@@ -332,20 +517,7 @@ int t_getstr(char *string)
 */
 void transmit_finish_handler()
 {
-    uInt32 len = 0;
-    
-    len = sysTransmitBuffer.read(&sysTransmitBuffer, &transmit_buffer, TRANSMIT_BUFFER_SIZE);
-    if (len != 0)
-    {             
-        is_send_close = mRESET;
-        transmit_little(len);
-    }
-    else
-    {
-        //关闭发送
-        stop_transmit();
-        is_send_close = mSET;
-    }
+    rt_sem_release(&sem_transmit_complete);
 }
 
 
@@ -357,22 +529,8 @@ void transmit_finish_handler()
 */
 void receive_finish_handler(unsigned int length)
 {
-    uInt32 actual_len = 0;
-    if(length > RECEIVE_BUFFER_SIZE)
-    {
-        length = RECEIVE_BUFFER_SIZE;
-        rise_erro("2big2write");
-    }
-    
-    actual_len = sysReceiveBuffer.write(&sysReceiveBuffer, &receive_buffer, length);
-    if (actual_len != length)
-    {                
-        //异常，有一部分数据没能写入，丢失了数据
-        rise_erro("lost_data");
-    }else
-    {
-        //正常写入了一次
-        ;
-    }
+    receive_length = length;
+    rt_sem_release(&sem_receive_complete);
 }
+
 

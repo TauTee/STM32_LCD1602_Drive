@@ -77,23 +77,23 @@ int main()
     led_init();
     init_esp_hardware();
     
-    thread_lcd_show = rt_thread_create("lcd", thread_lcd_entry, RT_NULL, 512, 3, 5);
-    if(thread_lcd_show != RT_NULL)
-    {
-        rt_thread_startup(thread_lcd_show);
-    }
-    
-    thread_led = rt_thread_create("led", thread_led_entry, RT_NULL, 512, 4, 5);
-    if(thread_led != RT_NULL)
-    {
-        rt_thread_startup(thread_led);
-    }
-    
-    rt_e = rt_thread_init(&thread_hello, "hi", thread_hello_entry, RT_NULL,
-                    thread_hello_stack, sizeof(thread_hello_stack), 5, 5); 
-    
-    if(rt_e == RT_EOK)
-    {
-        rt_thread_startup(&thread_hello);
-    }
+//    thread_lcd_show = rt_thread_create("lcd", thread_lcd_entry, RT_NULL, 512, 3, 5);
+//    if(thread_lcd_show != RT_NULL)
+//    {
+//        rt_thread_startup(thread_lcd_show);
+//    }
+//    
+//    thread_led = rt_thread_create("led", thread_led_entry, RT_NULL, 512, 4, 5);
+//    if(thread_led != RT_NULL)
+//    {
+//        rt_thread_startup(thread_led);
+//    }
+//    
+//    rt_e = rt_thread_init(&thread_hello, "hi", thread_hello_entry, RT_NULL,
+//                    thread_hello_stack, sizeof(thread_hello_stack), 5, 5); 
+//    
+//    if(rt_e == RT_EOK)
+//    {
+//        rt_thread_startup(&thread_hello);
+//    }
 }

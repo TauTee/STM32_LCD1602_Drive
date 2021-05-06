@@ -12,7 +12,7 @@
 #define TRANSMIT_BUFFER_SIZE 128     //DMA发送缓冲区
 
 #define GET_BUFFER_SIZE 1024     //发送环形缓冲区
-#define RECEIVE_BUFFER_SIZE 256     //DMA发送缓冲区
+#define RECEIVE_BUFFER_SIZE 128     //DMA发送缓冲区
 
 
 /*
