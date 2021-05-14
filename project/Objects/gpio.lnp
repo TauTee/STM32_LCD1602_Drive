@@ -32,6 +32,7 @@
 ".\objects\esp8266_at.o"
 ".\objects\uart2_dma.o"
 ".\objects\esp8266_finsh.o"
+".\objects\simple_http.o"
 ".\objects\cmd.o"
 ".\objects\msh.o"
 ".\objects\shell.o"

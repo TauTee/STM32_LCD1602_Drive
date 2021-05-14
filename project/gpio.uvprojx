@@ -565,6 +565,11 @@
               <FileType>1</FileType>
               <FilePath>..\HardWare\esp8266_finsh.c</FilePath>
             </File>
+            <File>
+              <FileName>simple_http.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\HardWare\simple_http.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

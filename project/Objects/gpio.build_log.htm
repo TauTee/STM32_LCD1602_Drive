@@ -22,29 +22,62 @@ Dialog DLL:      TARMSTM.DLL V1.65.0.0
  
 <h2>Project:</h2>
 C:\Users\dell\Desktop\SMART-HOLDER\smart_holder_mdk\project\gpio.uvprojx
-Project File Date:  05/06/2021
+Project File Date:  05/07/2021
 
 <h2>Output:</h2>
 *** Using Compiler 'V5.05 update 1 (build 106)', folder: 'C:\Keil_v5\ARM\ARMCC\Bin'
 Build target 'Gpio'
-compiling esp8266_at.c...
-..\HardWare\esp8266_at.c(9): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "const char *"
-      t_send(istr, strlen(istr));
-..\HardWare\esp8266_at.c(22): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "const char *"
-      unsigned int    wait_str_len  = strlen(wait_str);   //?È´ýµ??Ö·û´®µÄ³¤¶?
-..\HardWare\esp8266_at.c(127): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *restrict"
-      sprintf(cmd, "AT+CWJAP_DEF=\"%s\",\"%s\"\r\n", issid, ipassword);
-..\HardWare\esp8266_at.c(151): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *restrict"
-      sprintf(cmd, "AT+CIPSTA_DEF=\"%s\"\r\n", iipaddress);
-..\HardWare\esp8266_at.c(161): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *restrict"
-      sprintf(cmd, "AT+CIPSTART=\"%s\",\"%s\",%d\r\n", imode, ip_domain, port);
-..\HardWare\esp8266_at.c(182): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *restrict"
-      sprintf(cmd, "AT+CIPSEND=%d\r\n", length);
-..\HardWare\esp8266_at.c: 6 warnings, 0 errors
-linking...
-Program Size: Code=26788 RO-data=2952 RW-data=348 ZI-data=17684  
-FromELF: creating hex file...
-".\Objects\gpio.axf" - 0 Error(s), 6 Warning(s).
+compiling simple_http.c...
+..\HardWare\simple_http.c(19): error:  #167: argument of type "uInt8" is incompatible with parameter of type "uInt8 *"
+      if(socket->read(socket, data_ch,1) > 0)
+..\HardWare\simple_http.c(25): error:  #11-D: unrecognized preprocessing directive
+  #endef REC_VERSION     
+..\HardWare\simple_http.c(26): error:  #11-D: unrecognized preprocessing directive
+  #endef REC_STACODE 
+..\HardWare\simple_http.c(27): error:  #11-D: unrecognized preprocessing directive
+  #endef REC_CODEDEIS 
+..\HardWare\simple_http.c(28): error:  #11-D: unrecognized preprocessing directive
+  #endef REC_HEADNAME 
+..\HardWare\simple_http.c(29): error:  #11-D: unrecognized preprocessing directive
+  #endef REC_HEADVALUE 
+..\HardWare\simple_http.c(30): error:  #11-D: unrecognized preprocessing directive
+  #endef REC_RESPONSE 
+..\HardWare\simple_http.c(31): error:  #11-D: unrecognized preprocessing directive
+  #endef REC_TIMEOUT
+..\HardWare\simple_http.c(11): warning:  #177-D: variable "status" was declared but never referenced
+      sInt32 status = 0;
+..\HardWare\simple_http.c(46): warning:  #167-D: argument of type "uInt8 *" is incompatible with parameter of type "const char *"
+      calloc_len     = rt_strlen(url) + rt_strlen(iheader) + data_len + 30;
+..\HardWare\simple_http.c(46): error:  #20: identifier "iheader" is undefined
+      calloc_len     = rt_strlen(url) + rt_strlen(iheader) + data_len + 30;
+..\HardWare\simple_http.c(51): warning:  #167-D: argument of type "uInt8 *" is incompatible with parameter of type "char *restrict"
+          strcat(idatas, GET);
+..\HardWare\simple_http.c(51): warning:  #167-D: argument of type "const uInt8 *" is incompatible with parameter of type "const char *restrict"
+          strcat(idatas, GET);
+..\HardWare\simple_http.c(52): warning:  #167-D: argument of type "uInt8 *" is incompatible with parameter of type "char *restrict"
+          strcat(idatas, url);
+..\HardWare\simple_http.c(52): warning:  #167-D: argument of type "uInt8 *" is incompatible with parameter of type "const char *restrict"
+          strcat(idatas, url);
+..\HardWare\simple_http.c(53): warning:  #167-D: argument of type "uInt8 *" is incompatible with parameter of type "char *restrict"
+          strcat(idatas, " ");
+..\HardWare\simple_http.c(54): warning:  #167-D: argument of type "uInt8 *" is incompatible with parameter of type "char *restrict"
+          strcat(idatas, VERSION);
+..\HardWare\simple_http.c(54): warning:  #167-D: argument of type "const uInt8 *" is incompatible with parameter of type "const char *restrict"
+          strcat(idatas, VERSION);
+..\HardWare\simple_http.c(55): warning:  #167-D: argument of type "uInt8 *" is incompatible with parameter of type "char *restrict"
+          strcat(idatas, istr_header);
+..\HardWare\simple_http.c(55): warning:  #167-D: argument of type "uInt8 *" is incompatible with parameter of type "const char *restrict"
+          strcat(idatas, istr_header);
+..\HardWare\simple_http.c(56): warning:  #167-D: argument of type "uInt8 *" is incompatible with parameter of type "char *restrict"
+          strcat(idatas, "\r\n");
+..\HardWare\simple_http.c(58): warning:  #167-D: argument of type "uInt8 *" is incompatible with parameter of type "const char *"
+          send_len = rt_strlen(idatas) + 1;
+..\HardWare\simple_http.c(69): warning:  #940-D: missing return statement at end of non-void function "post"
+  }
+..\HardWare\simple_http.c(40): warning:  #550-D: variable "response" was set but never used
+      static httpResponse response;
+..\HardWare\simple_http.c: 15 warnings, 9 errors
+".\Objects\gpio.axf" - 9 Error(s), 15 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -66,26 +99,27 @@ Package Vendor: RealThread
 
    * Component: RealThread.RT-Thread::RTOS:shell:3.1.3
       Source file:   components\finsh\shell.c
-      Source file:   components\finsh\cmd.c
       Source file:   components\finsh\msh.c
+      Source file:   components\finsh\cmd.c
 
    * Component: RealThread.RT-Thread::RTOS:kernel:3.1.3
-      Source file:   src\irq.c
-      Source file:   src\mem.c
-      Source file:   src\kservice.c
-      Source file:   src\object.c
-      Source file:   src\scheduler.c
-      Source file:   src\thread.c
-      Source file:   src\ipc.c
-      Source file:   bsp\board.c
       Include file:  bsp\rtconfig.h
+      Source file:   src\idle.c
       Source file:   src\clock.c
       Source file:   src\components.c
-      Source file:   src\idle.c
-      Source file:   libcpu\arm\cortex-m3\context_rvds.S
+      Source file:   src\ipc.c
+      Source file:   bsp\board.c
+      Source file:   src\object.c
+      Source file:   src\kservice.c
       Source file:   libcpu\arm\cortex-m3\cpuport.c
+      Source file:   src\scheduler.c
+      Source file:   src\mem.c
       Source file:   src\timer.c
-Build Time Elapsed:  00:00:01
+      Source file:   src\irq.c
+      Source file:   libcpu\arm\cortex-m3\context_rvds.S
+      Source file:   src\thread.c
+Target not created.
+Build Time Elapsed:  00:00:02
 </pre>
 </body>
 </html>

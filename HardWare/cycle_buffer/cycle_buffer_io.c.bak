@@ -505,8 +505,7 @@ static void thread_receive_entry(void *param)
             //正常写入了一次
             ;
         }
-        //uart2_tx_all_now();
-        }
+    }
 }
 
 /*
