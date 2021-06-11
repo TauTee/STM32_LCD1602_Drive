@@ -3,7 +3,7 @@
 <title>Static Call Graph - [.\Objects\gpio.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\Objects\gpio.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5050106: Last Updated: Wed May 12 12:43:36 2021
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5050106: Last Updated: Sat May 22 10:31:08 2021
 <BR><P>
 <H3>Maximum Stack Usage =        692 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -1424,9 +1424,9 @@ Global Symbols
 </UL>
 <BR>[Calls]<UL><LI><a href="#[f0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_thread_startup
 <LI><a href="#[ee]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_thread_create
-<LI><a href="#[ed]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_calloc
 <LI><a href="#[ec]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;finsh_system_function_init
 <LI><a href="#[eb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;finsh_set_prompt_mode
+<LI><a href="#[ed]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_calloc
 <LI><a href="#[c9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_kprintf
 <LI><a href="#[ef]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_sem_init
 </UL>
@@ -1657,7 +1657,6 @@ Global Symbols
 <LI><a href="#[10c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_mutex_take
 <LI><a href="#[10d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_mutex_release
 <LI><a href="#[fc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_mutex_init
-<LI><a href="#[cb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_rt_thread_init
 <LI><a href="#[138]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_schedule_remove_thread
 <LI><a href="#[137]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_schedule_insert_thread
 <LI><a href="#[c8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_rt_scheduler_stack_check
@@ -1682,6 +1681,7 @@ Global Symbols
 <LI><a href="#[45]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_thread_timeout
 <LI><a href="#[146]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_thread_sleep
 <LI><a href="#[13f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_thread_delete
+<LI><a href="#[cb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_rt_thread_init
 </UL>
 
 <P><STRONG><a name="[ed]"></a>rt_calloc</STRONG> (Thumb, 34 bytes, Stack size 16 bytes, mem.o(i.rt_calloc))
@@ -1774,9 +1774,9 @@ Global Symbols
 <P><STRONG><a name="[11d]"></a>rt_hw_console_output</STRONG> (Thumb, 70 bytes, Stack size 24 bytes, board.o(i.rt_hw_console_output))
 <BR><BR>[Stack]<UL><LI>Max Depth = 24<LI>Call Chain = rt_hw_console_output
 </UL>
-<BR>[Calls]<UL><LI><a href="#[11f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_SendData
+<BR>[Calls]<UL><LI><a href="#[11e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_strlen
+<LI><a href="#[11f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_SendData
 <LI><a href="#[9c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_GetFlagStatus
-<LI><a href="#[11e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_strlen
 </UL>
 <BR>[Called By]<UL><LI><a href="#[c9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_kprintf
 </UL>
@@ -1911,8 +1911,8 @@ Global Symbols
 <BR><BR>[Stack]<UL><LI>Max Depth = 20<LI>Call Chain = rt_memset
 </UL>
 <BR>[Called By]<UL><LI><a href="#[ed]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_calloc
-<LI><a href="#[cb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_rt_thread_init
 <LI><a href="#[12e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_object_allocate
+<LI><a href="#[cb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_rt_thread_init
 </UL>
 
 <P><STRONG><a name="[fc]"></a>rt_mutex_init</STRONG> (Thumb, 58 bytes, Stack size 16 bytes, ipc.o(i.rt_mutex_init))
@@ -2252,9 +2252,9 @@ Global Symbols
 <BR><BR>[Stack]<UL><LI>Max Depth = 628<LI>Call Chain = rt_thread_create &rArr; _rt_thread_init &rArr; rt_timer_init &rArr; rt_object_init &rArr; rt_exit_critical &rArr; rt_schedule &rArr; _rt_scheduler_stack_check &rArr; list_thread &rArr; object_split &rArr; rt_kprintf &rArr; rt_vsnprintf &rArr; print_number
 </UL>
 <BR>[Calls]<UL><LI><a href="#[110]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_malloc
-<LI><a href="#[cb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_rt_thread_init
 <LI><a href="#[12e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_object_allocate
 <LI><a href="#[130]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_object_delete
+<LI><a href="#[cb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_rt_thread_init
 </UL>
 <BR>[Called By]<UL><LI><a href="#[54]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;finsh_system_init
 <LI><a href="#[107]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;$Super$$main
@@ -2267,11 +2267,11 @@ Global Symbols
 <BR>[Calls]<UL><LI><a href="#[c4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_assert_handler
 <LI><a href="#[103]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_hw_interrupt_enable
 <LI><a href="#[ca]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_hw_interrupt_disable
-<LI><a href="#[141]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_list_insert_after
 <LI><a href="#[138]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_schedule_remove_thread
 <LI><a href="#[129]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_object_get_type
 <LI><a href="#[133]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_object_is_systemobject
 <LI><a href="#[140]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_timer_detach
+<LI><a href="#[141]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_list_insert_after
 </UL>
 <BR>[Called By]<UL><LI><a href="#[12a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_thread_control
 </UL>
@@ -2281,12 +2281,12 @@ Global Symbols
 </UL>
 <BR>[Calls]<UL><LI><a href="#[103]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_hw_interrupt_enable
 <LI><a href="#[ca]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_hw_interrupt_disable
-<LI><a href="#[141]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_list_insert_after
 <LI><a href="#[138]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_schedule_remove_thread
 <LI><a href="#[113]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_schedule
 <LI><a href="#[133]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_object_is_systemobject
 <LI><a href="#[132]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_object_detach
 <LI><a href="#[140]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_timer_detach
+<LI><a href="#[141]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_list_insert_after
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> thread.o(i._rt_thread_init)
 </UL>
@@ -2322,8 +2322,8 @@ Global Symbols
 <BR><BR>[Stack]<UL><LI>Max Depth = 628<LI>Call Chain = rt_thread_init &rArr; _rt_thread_init &rArr; rt_timer_init &rArr; rt_object_init &rArr; rt_exit_critical &rArr; rt_schedule &rArr; _rt_scheduler_stack_check &rArr; list_thread &rArr; object_split &rArr; rt_kprintf &rArr; rt_vsnprintf &rArr; print_number
 </UL>
 <BR>[Calls]<UL><LI><a href="#[c4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_assert_handler
-<LI><a href="#[cb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_rt_thread_init
 <LI><a href="#[127]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_object_init
+<LI><a href="#[cb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_rt_thread_init
 </UL>
 <BR>[Called By]<UL><LI><a href="#[f8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;init_tx_rx
 <LI><a href="#[144]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_thread_idle_init
@@ -2351,10 +2351,10 @@ Global Symbols
 <BR>[Calls]<UL><LI><a href="#[c4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_assert_handler
 <LI><a href="#[103]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_hw_interrupt_enable
 <LI><a href="#[ca]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_hw_interrupt_disable
-<LI><a href="#[147]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_list_remove
 <LI><a href="#[137]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_schedule_insert_thread
 <LI><a href="#[129]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_object_get_type
 <LI><a href="#[148]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_timer_stop
+<LI><a href="#[147]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_list_remove
 </UL>
 <BR>[Called By]<UL><LI><a href="#[f0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_thread_startup
 <LI><a href="#[121]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_ipc_list_resume
@@ -2419,10 +2419,10 @@ Global Symbols
 <BR><BR>[Stack]<UL><LI>Max Depth = 468<LI>Call Chain = rt_thread_timeout &rArr; rt_schedule &rArr; _rt_scheduler_stack_check &rArr; list_thread &rArr; object_split &rArr; rt_kprintf &rArr; rt_vsnprintf &rArr; print_number
 </UL>
 <BR>[Calls]<UL><LI><a href="#[c4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_assert_handler
-<LI><a href="#[147]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_list_remove
 <LI><a href="#[137]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_schedule_insert_thread
 <LI><a href="#[113]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_schedule
 <LI><a href="#[129]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_object_get_type
+<LI><a href="#[147]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_list_remove
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> thread.o(i._rt_thread_init)
 </UL>
@@ -2431,8 +2431,8 @@ Global Symbols
 </UL>
 <BR>[Calls]<UL><LI><a href="#[103]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_hw_interrupt_enable
 <LI><a href="#[ca]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_hw_interrupt_disable
-<LI><a href="#[147]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_list_remove
 <LI><a href="#[113]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_schedule
+<LI><a href="#[147]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_list_remove
 </UL>
 <BR>[Called By]<UL><LI><a href="#[bc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_tick_increase
 </UL>

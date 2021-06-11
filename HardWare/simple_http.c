@@ -4,33 +4,46 @@
 #include "simple_http.h"
 #include "simple_socket.h"
 
+void raise_err(uInt8 *err_information)
+{
+
+}
+
+uInt8 *header2str(httpHeader *header)
+{
+    
+}
+
 httpResponse http_get_response(Socket *socket)
 {
-#define REC_VERSION 0    
-#define REC_STACODE 1
-#define REC_CODEDDIS 2
-#define REC_CODEDDIS_R 3
-#define REC_CODEDDIS_N 4
-#define REC_HEADWORD_1 5
-#define REC_HEADWORD_2 6
-#define REC_HEADWORD_3 7
-#define REC_HEADWORD_4 8
-#define REC_RESPONSE 8
-#define REC_TIMEOUT -1
+    #define REC_VERSION 0    
+    #define REC_STACODE 1
+    #define REC_CODEDDIS 2
+    #define REC_CODEDDIS_R 3
+    #define REC_CODEDDIS_N 4
+    #define REC_HEADWORD_1 5
+    #define REC_HEADWORD_2 6
+    #define REC_HEADWORD_3 7
+    #define REC_HEADWORD_4 8
+    #define REC_RESPONSE 9
+    #define REC_TIMEOUT -1
 
-#define zero_status()   {status = REC_VERSION;index = 0;}
     const uInt32 MAX_WAIT_TIME = 1000;
     httpResponse response;
     uInt8 data_ch;
     sInt32 status = REC_VERSION;
     uInt32 index = 0;
-    unsigned int    begain_time   = rt_tick_get();
+    uInt8 head_word_name[10][15];
+    uInt8 head_word_value[10][15];
+    uInt8 response_data[1024];
+    uInt32 head_word_index = 0;
+    uInt32 begain_time   = rt_tick_get();
     
 
     
     while ((rt_tick_get() - begain_time < MAX_WAIT_TIME))
     {
-        if(socket->read(socket, data_ch,1) > 0)
+        if(socket->read(socket, &data_ch, 1) > 0)
         {
             switch(status)
             {
@@ -40,7 +53,7 @@ httpResponse http_get_response(Socket *socket)
                         response.version_num[index++] = data_ch;
                         if(index > 10)
                         {
-                            err;
+                            raise_err("ver_num too long");
                         }
                     }else
                     {
@@ -52,9 +65,9 @@ httpResponse http_get_response(Socket *socket)
                     if(data_ch != ' ')
                     {
                         index++;
-                        if(index > 3)
+                        if(index > 4)
                         {
-                            err;
+                            raise_err("stacode too long");
                         }
                     }else
                     {
@@ -75,24 +88,25 @@ httpResponse http_get_response(Socket *socket)
                 case REC_CODEDDIS_R:
                     if(data_ch != '\n')
                     {
-                        zero_status();
+                        raise_err("to head word err");
                     }else
                     {
-                        status = REC_HEADNAME;
+                        status = REC_CODEDDIS_N;
                         index  = 0;
+                        head_word_index = 0;
                     }
                     break;
                 case REC_CODEDDIS_N:
                     if(data_ch != ':')
                     {
-                        HEAD_KEY_NAME[index++] = data_ch;
-                        if(index > 3)
+                        head_word_name[head_word_index][index++] = data_ch;
+                        if(index > 8)
                         {
-                            err;
+                            raise_err("head word name too long");
                         }
                     }else
                     {
-                        HEAD_KEY_NAME[HEAD_WORD_I][index] = '\0';
+                        head_word_name[head_word_index][index] = '\0';
                         status = REC_HEADWORD_1;
                         index  = 0;
                     }
@@ -100,11 +114,10 @@ httpResponse http_get_response(Socket *socket)
                 case REC_HEADWORD_1:
                     if(data_ch != '\r')
                     {
-                        
-                        HEAD_KEY_VALUE[HEAD_WORD_I][index++] = data_ch;
-                        if(index > 3)
+                        head_word_value[head_word_index][index++] = data_ch;
+                        if(index > 13)
                         {
-                            err;
+                            raise_err("head word value too long");
                         }
                     }else
                     {
@@ -115,20 +128,19 @@ httpResponse http_get_response(Socket *socket)
                 case REC_HEADWORD_2:
                     if(data_ch != '\n')
                     {
-                        zero_status();
+                        raise_err("head word \\n lost");
                     }else
                     {
                         status = REC_HEADWORD_3;
                         index  = 0;
-                        
                     }
                     break;
                 case REC_HEADWORD_3:
                     if(data_ch != '\r')
                     {
                         index = 0;
-                        HEAD_WORD_I ++;
-                        HEAD_KEY_VALUE[HEAD_WORD_I][index++] = data_ch;
+                        head_word_index++;
+                        head_word_name[head_word_index][index++] = data_ch;
                         status = REC_HEADWORD_1;
                     }else
                     {
@@ -139,7 +151,7 @@ httpResponse http_get_response(Socket *socket)
                 case REC_HEADWORD_4:
                     if(data_ch != '\n')
                     {
-                        zero_status();
+                        raise_err("to response err");
                     }else
                     {
                         status = REC_RESPONSE;
@@ -147,30 +159,29 @@ httpResponse http_get_response(Socket *socket)
                     }
                     break;
                 case REC_RESPONSE:
-                    RESPONSE_DATA[RESPONSE_DATA_I++] = data_ch;
-                    if(index >= RESPONSE_DATA_LEN)
+                    response_data[index++] = data_ch;
+                    if(index >= 1023)
                     {
-                        END;
+                        raise_err("response too long");
                     }
                     break;
                 default:
-                    ;
+                    raise_err("sta err");
             }
         }else
         {
             //ณ๖ดํมห;
         }
     }
+    #undef REC_VERSION     
+    #undef REC_STACODE 
+    #undef REC_CODEDEIS 
+    #undef REC_HEADNAME 
+    #undef REC_HEADVALUE 
+    #undef REC_RESPONSE 
+    #undef REC_TIMEOUT
     
     return response;
-    
-#undef REC_VERSION     
-#undef REC_STACODE 
-#undef REC_CODEDEIS 
-#undef REC_HEADNAME 
-#undef REC_HEADVALUE 
-#undef REC_RESPONSE 
-#undef REC_TIMEOUT
 }
 
 httpResponse *post(uInt8 *url, httpHeader *header, uInt8 *data, uInt32 data_len)
@@ -185,7 +196,7 @@ httpResponse *post(uInt8 *url, httpHeader *header, uInt8 *data, uInt32 data_len)
     const uInt8 VERSION[] = "HTTP/1.1\r\n";
     
     istr_header = header2str(header);
-    calloc_len     = rt_strlen(url) + rt_strlen(iheader) + data_len + 30;
+    calloc_len     = rt_strlen(url) + rt_strlen(istr_header) + data_len + 30;
     idatas  = rt_calloc(calloc_len, sizeof(uInt8));
     
     if(idatas != RT_NULL)
